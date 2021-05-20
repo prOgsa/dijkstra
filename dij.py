@@ -39,10 +39,13 @@ def BFS(gamemap, start, finish, height, width):
 def popMin(g, ochered):
     m = g[ochered[0]]
     key = ochered[0]
+    m_i = 0
     for i in range(1, len(ochered)):
         if g[ochered[i]] < m:
             key = ochered[i]
             m = g[key]
+            m_i = i
+    ochered.pop(m_i)
     return key
 
 
@@ -53,7 +56,7 @@ def Dijkstra(gamemap, start, finish, height, width):
     slov = dict()
     closed = []
     while len(ochered) != 0:
-        vershina = ochered.pop(0)
+        vershina = popMin(g, ochered)
         closed.append(vershina)
         if vershina == finish:
             print(vershina)
@@ -67,7 +70,12 @@ def Dijkstra(gamemap, start, finish, height, width):
         for j in GetNeighbours(gamemap, vershina, height, width):
             if j not in closed and j not in ochered:
                 ochered.append(j)
+                g[j] = g[vershina] + 1
                 slov[j] = vershina
+            elif j in ochered:
+                if g[j] > g[vershina] + 1:
+                    g[j] = g[vershina] + 1
+                    slov[j] = vershina
     return False
 
 
@@ -83,5 +91,4 @@ temps = (mapfile.readline().split())
 start = (int(temps[0]), int(temps[1]))
 tempf = (mapfile.readline().split())
 finish = (int(tempf[0]), int(tempf[1]))
-print(BFS(gamemap, start, finish, height, width))
-# print(Dijkstra(gamemap, start, finish, height, width))
+print(Dijkstra(gamemap, start, finish, height, width))
